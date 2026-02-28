@@ -1,10 +1,10 @@
 'use strict'
 
-const dgram = require('dgram')
-const path = require('path')
-const net = require('net')
-const tls = require('tls')
-const fs = require('fs')
+const dgram = require('node:dgram')
+const path = require('node:path')
+const net = require('node:net')
+const tls = require('node:tls')
+const fs = require('node:fs')
 
 function createUdpListener (msgHandler) {
   return new Promise((resolve) => {
@@ -46,8 +46,19 @@ function createSecureTcpListener (msgHandler) {
   })
 }
 
+function withResolvers () {
+  let _resolve
+  let _reject
+  const promise = new Promise((resolve, reject) => {
+    _resolve = resolve
+    _reject = reject
+  })
+  return { promise, resolve: _resolve, reject: _reject }
+}
+
 module.exports = {
   createSecureTcpListener,
   createTcpListener,
-  createUdpListener
+  createUdpListener,
+  withResolvers
 }
